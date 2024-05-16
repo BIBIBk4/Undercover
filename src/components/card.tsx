@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 import store, { voter } from "./store";
+import MessageCard from "./messageCard";
 
 export default function Card() {
     const router = useRouter();
@@ -10,6 +11,8 @@ export default function Card() {
     const [clique, setClique] = useState(false);
     const dispatch = useDispatch();
     const [fini, setFini] = useState(false);
+    const [etat, setEtat] = useState(true);
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         if (fini) {
@@ -31,77 +34,122 @@ export default function Card() {
         if (joueur.role === 'Mr. White') {
             mot = prompt("Mr. White, quel est le mot ?");
             if (mot === vraiMot) {
-                alert('Mr. White a gagné');
-                setClique(false);
-                setFini(true);
+                setEtat(false);
+                setMessage("Mr. White a gagné")
+                setTimeout(() =>{
+                    setEtat(true)
+                    setClique(false);
+                    setFini(true);
+                }, 2000);
                 return;
             } else {
-                alert('Mr. White a perdu');
-                setClique(false);
+                setEtat(false);
+                setMessage("Mr. White a perdu")
+                setTimeout(() =>{
+                    setEtat(true)
+                    setClique(false);
+                }, 2000);
             }
         }
         if (joueur.role !== 'Mr. White' && joueur.role !== vraiMot) {
-            alert("L'agent secret a perdu");
-            setClique(false);
+            setEtat(false);
+            setMessage("L'agent secret a perdu")
+            setTimeout(() =>{
+                setEtat(true)
+                setClique(false);
+            }, 2000);
         }
         if (joueur.role === vraiMot) {
-            alert("Vous avez éliminé un civil");
-            setClique(false);
+            setEtat(false);
+            setMessage("Vous avez éliminé un civil")
+            setTimeout(() =>{
+                setEtat(true)
+                setClique(false);
+            }, 2000);
         }
 
         if (hasVoted) {
-            console.log('case0');
-            alert("Les civils ont gagné");
-            setClique(false);
-            setFini(true);
+            setEtat(false);
+            setMessage("Les civils ont gagné")
+            setTimeout(() =>{
+                setEtat(true)
+                setClique(false);
+                setFini(true);
+            }, 2000);
             return;
         }
 
         if(participantsNonVoted.length === 2) {
             if((participantsNonVoted[0].role === 'Mr. White' && participantsNonVoted[1].role === vraiMot) ||
                 (participantsNonVoted[1].role === 'Mr. White' && participantsNonVoted[0].role === vraiMot)) {
-                    console.log('case1');
-                alert('Les civils ont perdu et Mr. White a gagné');
+            setEtat(false);
+            setMessage("Les civils ont perdu et Mr. White a gagné")
+            setTimeout(() =>{
+                setEtat(true)
                 setClique(false);
                 setFini(true);
+            }, 2000);
                 return;
             }
             if((participantsNonVoted[1].role === 'Mr. White' && participantsNonVoted[0].role !== vraiMot) ||
                 (participantsNonVoted[0].role === 'Mr. White' && participantsNonVoted[1].role !== vraiMot)) {
-               console.log('case2');
-                alert('Les civils ont perdu');
+                setEtat(false);
+                setMessage("Les civils ont perdu")
+                setTimeout(() =>{
+                    setEtat(true);
+                }, 2000);
                 mot = prompt("Mr. White, quel est le mot ?");
                 if (mot === vraiMot) {
-                    alert('Mr. White a gagné');
-                    setClique(false);
-                    setFini(true);
+                    setEtat(false);
+                    setMessage("'Mr. White a gagné")
+                    setTimeout(() =>{
+                        setEtat(true)
+                        setClique(false);
+                        setFini(true);
+                    }, 2000);
                     return;
                 } else {
-                    alert('Mr. White a perdu');
-                    alert("L'agent secret a gagné");
+                    setEtat(false);
+                setMessage("Mr. White a perdu")
+                setTimeout(() =>{
+                    setEtat(true);
+                }, 2000);
+                    setEtat(false);
+                setMessage("L'agent secret a gagné")
+                setTimeout(() =>{
+                    setEtat(true);
                     setClique(false);
                     setFini(true);
+                }, 2000);
                 }
             }
             if((participantsNonVoted[0].role === vraiMot && participantsNonVoted[1].role !== vraiMot) ||
                 (participantsNonVoted[1].role === vraiMot && participantsNonVoted[0].role !== vraiMot)) {
-               console.log('case3');
-                    alert('L\'agent secret a gagné');
-                setClique(false);
-                setFini(true);
+                    setEtat(false);
+                    setMessage("L'agent secret a gagné")
+                    setTimeout(() =>{
+                        setEtat(true);
+                        setClique(false);
+                        setFini(true);
+                    }, 2000);
             }
             if(participantsNonVoted[0].role ===vraiMot && participantsNonVoted[1].role === vraiMot) {
-            console.log('case4');
-                alert('Les civils ont gagné'); 
-            setClique(false); 
-            setFini(true);
+                setEtat(false);
+                setMessage("Les civils ont gagné")
+                setTimeout(() =>{
+                    setEtat(true);
+                    setClique(false);
+                    setFini(true);
+                }, 2000);
         }
     }
 
     }
 
     return (
-        <>
+        <> 
+        {!etat ? <MessageCard contenu={message} etat={etat}/> : (
+            <>
             <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => setClique(true)}>Cliquez pour voter</button>
             <div className="flex flex-wrap">
                 {participants && participants.map((joueur: any, index: number) => (
@@ -122,6 +170,8 @@ export default function Card() {
                     )
                 ))}
             </div>
+            </>
+        )}
         </>
     );
 }
