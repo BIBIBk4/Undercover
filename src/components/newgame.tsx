@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { ajouterJoueur, debuterPartie } from '@/components/store';
+import store, { ajouterJoueur, debuterPartie } from '@/components/store';
 import Joueurs from '@/components/displayJoueurs';
 import Link from 'next/link';
 
@@ -51,11 +51,13 @@ export default function AddJoueur() {
             </div>
             <br></br>
             <div className="flex justify-center items-center">
+                {store.getState().length >= 6 && (
             <Link href='/pregame'> 
                 <button onClick={debuterGame} className="ml-2 inline-flex items-center justify-center w-20 h-10 border border-transparent rounded-full shadow-sm text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                 Start
                 </button>
             </Link>
+            )}
             </div>
             </>
     );
