@@ -26,7 +26,7 @@ export default function Card() {
         const participantsNonVoted = store.getState().filter((joueur: any) => !joueur.voted).slice(2);        
         console.log(participantsNonVoted);
         if (fini) return;
-        var joueur = participants[id + 1];
+        var joueur = participants[id];
         console.log(joueur);
         if (joueur.role === 'Mr. White') {
             mot = prompt("Mr. White, quel est le mot ?");

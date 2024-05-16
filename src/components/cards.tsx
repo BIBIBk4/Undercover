@@ -53,7 +53,7 @@ export default function Cards() {
 
     function afficherCarte(id: number) {
         setClique(true);
-        setId(id+1);
+        setId(id);
         console.log(id);
     }
 }
